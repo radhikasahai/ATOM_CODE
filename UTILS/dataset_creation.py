@@ -1,3 +1,76 @@
+
+
+# MAKE A FUNTION (this creates the splits)
+# nekAll = ["2","3","5","9"]
+# #nekAll = ["3","5","9"]
+
+# for nek in nekAll:
+#     # Get training data
+#     data_path = "/p/lustre2/fan4/NEK_data/NEK"+nek+"/scaled_descriptors/"
+
+#     binding_df = pd.read_csv(data_path+"NEK"+nek+"_1_uM_min_50_pct_binding_with_moe_descriptors.csv") 
+#     print(binding_df.shape)
+
+#     print(binding_df.active.value_counts())
+#     num_gap = (binding_df.loc[binding_df['active']==0].shape[0]) - (binding_df.loc[binding_df['active']==1].shape[0])
+#     print(num_gap)
+#     num_minority = binding_df.loc[binding_df['active']==1].shape[0]
+#     print(num_minority)
+
+#     # Separate majority and minority classes
+#     df_majority = binding_df[binding_df['active']==0]
+#     df_minority = binding_df[binding_df['active']==1]
+
+#     #=======================
+#     # Create 5-fold splits
+#     #=======================
+#     kf = KFold(n_splits=5, shuffle=True, random_state=0)
+
+#     # majority
+#     for i, (_, v_ind) in enumerate(kf.split(df_majority)):
+#         df_majority.loc[df_majority.index[v_ind], 'fold'] = f"fold{i+1}"
+
+#     # minority
+#     for i, (_, v_ind) in enumerate(kf.split(df_minority)):
+#         df_minority.loc[df_minority.index[v_ind], 'fold'] = f"fold{i+1}"
+
+
+#     print(df_majority['fold'].value_counts())
+#     print(df_minority['fold'].value_counts())
+
+
+#     # Concat
+#     all_fold_df = pd.concat([df_majority,df_minority])
+#     print(all_fold_df.shape)
+#     print(all_fold_df.active.value_counts())
+
+
+#     # Save to file
+#     split_path = "/p/lustre2/fan4/NEK_data/NEK_data_4Berkeley/NEK"+nek
+    
+#     if not os.path.exists(split_path):
+#         os.makedirs(split_path)
+
+#     all_fold_df.to_csv(split_path+"/NEK"+nek+"_1_uM_min_50_pct_binding_5fold_random_imbalanced.csv", index=False)
+
+#Features
+if efcp then grab the SMILES features colum then generate ecfp features 
+    else use moe features
+
+#sampling 
+
+def scale(df, path):
+    keep id columns
+    StandardScalcer(on numeric features)
+    return scaled_df
+
+def sampling(scaled_df, path):
+if SMOTE
+if UNDER
+    return balenced_df
+
+
+#break up funtions 
 def get_arrays(file_path, df_filename, filename_type=None, save=False, printOut=False):
     """use dataframes to get trainX, trainy, testX, testy out. Optional: save those files to csv
     file_path: directory
