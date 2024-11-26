@@ -15,14 +15,20 @@ def rf_results(model, x_input, y_labels, printout=False):
     acc = accuracy_score(y_labels, pred)
     precision = precision_score(y_labels, pred)
     recall = recall_score(y_labels, pred)
+    f1 = f1_score(y_labels, pred)
+    roc_auc = roc_auc_score(y_labels, pred)
     specificity = specificity_score(tn, fp)
     prob = model.predict_proba(x_input)
+    mcc = matthews_corrcoef(y_labels, pred)
+    bal_acc = balanced_accuracy_score(y_labels, pred)
     if printout: 
         print(f'accuracy: {acc:.3f}, precision: {precision:.3f}, recall: {recall:.3f}, specificity: {specificity:.3f}')
-    return {'Prediction': pred,'Accuracy' : acc, 'Precision' :precision, 'Recall' :recall, 'Specificity': specificity,'Probability' :prob}
+    return {'prediction': pred,'accuracy' : acc, 'precision' :precision, 'recall' :recall, 
+            'specificity': specificity,'f1':f1,'ROC_AUC': roc_auc,
+            'MCC': mcc,'balanced_accuracy': bal_acc,'probability' :prob}
 
 
-def rf_models(train_x, train_y, test_x, test_y, rf_type, parameters):
+def rf_models(train_x, train_y, test_x, test_y, rf_type, parameters,printout=False):
     """Fit a RF model, make predictions, get probabilities
     @params: 
     train_x, train_y, test_x, test_y: train and test set inputs (np arrays) 
@@ -63,8 +69,9 @@ def rf_models(train_x, train_y, test_x, test_y, rf_type, parameters):
    
     train_results = rf_results(model, train_x, train_y)
     test_results = rf_results(model, test_x, test_y)
-    print(f'TRAIN: accuracy: {train_acc:.3f}, precision: {train_precision:.3f}, recall: {train_recall:.3f}, specificity: {train_specificity:.3f}')
-    print(f'TEST: accuracy: {test_acc:.3f}, precision: {test_precision:.3f}, recall: {test_recall:.3f}, specificity: {test_specificity:.3f}')
+    if printout: 
+        print(f'TRAIN: acc: {train_results['accuracy']:.3f}, precision: {train_results['precision']:.3f}, recall: {train_results['recall']:.3f}, spec: {train_results['specificity']:.3f}')
+        print(f'TEST: acc: {test_results['accuracy']:.3f}, precision: {test_results['precision']:.3f}, recall: {test_results['recall']:.3f}, spec: {test_results['specificity']:.3f}')
     # return {'model': model, 'train_pred':train_pred, 'test_pred': test_pred,
     #          'train_prob':train_prob, 'test_prob': test_prob}
     return model 
@@ -74,16 +81,19 @@ def gather_rf_results(model, x_input, true_labels):
     # results = rf_results(model, x_input, true_labels)
     results = rf_results(model, x_input, true_labels)
     # results_df = pd.DataFrame(results)
-    results = {
-        'prediction': pred,
-        'accuracy': acc,
-        'precision': precision,
-        'recall': recall,
-        'specificity': specificity,
-        'prob_class0': prob[:, 0],
-        'prob_class1': prob[:, 1]
+    # the only reason i did this dictionary was because the probability part wasn't working 
+    results_dict = {
+        'prediction': results['prediction'],
+        'accuracy': results['accuracy'],
+        'precision': results['precision'],
+        'recall': results['recall'],
+        'specificity': results['specificity'],
+        'f1': results['f1'], 'ROC_AUC': results['ROC_AUC'],
+        'MCC': results['MCC'],'balanced_accuracy': results['balanced_accuracy'],
+        'prob_class0': results['probability'][:, 0],
+        'prob_class1': results['probability'][:, 1]
     }
-    results_df = pd.DataFrame(results)
+    results_df = pd.DataFrame(results_dict)
     results_df['y'] = true_labels
     tp, tn, fp, fn = calculate_metrics(true_labels, pred)
     results_df['TN'] = tn  
