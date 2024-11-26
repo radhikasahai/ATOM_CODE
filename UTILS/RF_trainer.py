@@ -1,6 +1,7 @@
 import pyforest
 
-def rf_results(model, x_input, y_labels): 
+
+def rf_results(model, x_input, y_labels, printout=False): 
     """Make predictions adn get probabilities
     @params
     model: fitted model (fitted to train set)
@@ -16,8 +17,8 @@ def rf_results(model, x_input, y_labels):
     recall = recall_score(y_labels, pred)
     specificity = specificity_score(tn, fp)
     prob = model.predict_proba(x_input)
-
-    print(f'accuracy: {acc:.3f}, precision: {precision:.3f}, recall: {recall:.3f}, specificity: {specificity:.3f}')
+    if printout: 
+        print(f'accuracy: {acc:.3f}, precision: {precision:.3f}, recall: {recall:.3f}, specificity: {specificity:.3f}')
     return {'Prediction': pred,'Accuracy' : acc, 'Precision' :precision, 'Recall' :recall, 'Specificity': specificity,'Probability' :prob}
 
 
@@ -91,3 +92,20 @@ def gather_rf_results(model, x_input, true_labels):
     results_df['TP'] = tp     
    
     return results_df 
+
+def calculate_metrics(y_true, y_pred): 
+    
+    # tp = np.sum((y_true == 1) & (y_pred == 1))
+    # tn = np.sum((y_true == 0) & (y_pred == 0))
+    # fp = np.sum((y_true == 0) & (y_pred == 1))
+    # fn = np.sum((y_true == 1) & (y_pred == 0))
+    # return tp, tn, fp, fn
+    y_true = pd.Series(y_true) if not isinstance(y_true, pd.Series) else y_true
+    y_pred = pd.Series(y_pred) if not isinstance(y_pred, pd.Series) else y_pred
+    
+    tp = np.sum((y_true == 1) & (y_pred == 1))
+    tn = np.sum((y_true == 0) & (y_pred == 0))
+    fp = np.sum((y_true == 0) & (y_pred == 1))
+    fn = np.sum((y_true == 1) & (y_pred == 0))
+    
+    return tp, tn, fp, fn
