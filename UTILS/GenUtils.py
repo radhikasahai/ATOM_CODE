@@ -54,12 +54,12 @@ from imblearn.ensemble import BalancedRandomForestClassifier
 from sklearn.model_selection import GridSearchCV
 
 
-def calculate_metrics(y_true, y_pred):
-    tp = np.sum((y_true == 1) & (y_pred == 1))
-    tn = np.sum((y_true == 0) & (y_pred == 0))
-    fp = np.sum((y_true == 0) & (y_pred == 1))
-    fn = np.sum((y_true == 1) & (y_pred == 0))
-    return tp, tn, fp, fn
+# def calculate_metrics(y_true, y_pred):
+#     tp = np.sum((y_true == 1) & (y_pred == 1))
+#     tn = np.sum((y_true == 0) & (y_pred == 0))
+#     fp = np.sum((y_true == 0) & (y_pred == 1))
+#     fn = np.sum((y_true == 1) & (y_pred == 0))
+#     return tp, tn, fp, fn
 
 
 def timing(f):
