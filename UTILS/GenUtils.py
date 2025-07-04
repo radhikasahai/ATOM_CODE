@@ -95,7 +95,8 @@ def specificity_score(tn, fp):
     val = (tn/(tn+fp))
     return val
 
-def make_torch_tens_float(filepath=None, filename=None, rootname=None, df=None):
+def make_torch_tens_float(filepath=None, filename=None, rootname=None, df=None,full_path=None):
+    
     if filepath is not None:
         trainX_df = pd.read_csv(filepath + filename + "_trainX.csv")
         trainy_df = pd.read_csv(filepath + filename + "_train_y.csv")
@@ -136,6 +137,34 @@ def make_torch_tens_float(filepath=None, filename=None, rootname=None, df=None):
     testX = torch.as_tensor(test_x_temp, dtype=torch.float32)
     testy = torch.as_tensor(test_y_temp, dtype=torch.float32)
     return trainX, trainy, testX, testy
+
+def make_torch_tens_float_simple(file_path_X=None,file_path_y=None, df_path=None):
+    if df_path is not None: 
+        df = pd.read_csv(df_path)
+    # X_df = pd.read_csv(file_path_X)
+    # y_df = pd.read_csv(file_path_y)
+
+    drop_cols = ["NEK", "subset", "active", "base_rdkit_smiles", "compound_id"]
+    if "fold" in df.columns:
+        drop_cols.append("fold")
+    # X_df = df.drop(columns=drop_cols)
+    # y_df = df["active"]
+     
+    # x_temp = X_df.to_numpy().astype("double")  # double
+    # y_temp =y_df.to_numpy().flatten().astype("double")  # double
+
+    # X = torch.as_tensor(x_temp, dtype=torch.float32)
+    # y = torch.as_tensor(y_temp, dtype=torch.float32)
+
+    # return X,y
+    X = df.drop(columns=drop_cols).to_numpy().astype("float32")
+    y = df['active'].to_numpy().astype("float32")
+
+    testX = torch.from_numpy(X)
+    testy = torch.from_numpy(y)
+
+    return testX, testy
+
 
 def prediction_type(y_true, y_pred): 
     if (y_true == 0 and y_pred == 0): 

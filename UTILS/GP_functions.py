@@ -20,8 +20,9 @@ import itertools
 
 import sys
 
-sys.path.append("/Users/radhi/Desktop/GitHub/atom2024/atom2024/notebooks/")
-from ATOM_CODE.UTILS.GenUtils import *
+# sys.path.append("/Users/radhi/Desktop/GitHub/atom2024/atom2024/notebooks/")
+sys.path.append('/Users/jayceepang/msse/ATOM_CODE/UTILS/')
+from GenUtils import *
 
 
 class DirichletGPModel(ExactGP):
@@ -167,16 +168,50 @@ class Trainer:
         dist = self.model(x_input)  # get predicted distributions
         pred_means = dist.loc  # means for predicted dist
 
-        recall = recall_score(y_true, y_pred)
+        
         tp, tn, fp, fn = calculate_metrics(y_true, y_pred)
 
-        specificity = tn / (tn + fp)
+        try:
+            precision = precision_score(y_true, y_pred)
+        except ValueError:
+            precision = None
+
+        try:
+            recall = recall_score(y_true, y_pred)
+        except ValueError:
+            recall = None
+
+        try:
+            f1 = f1_score(y_true, y_pred)
+        except ValueError:
+            f1 = None
+
+        try:
+            roc_auc = roc_auc_score(y_true, y_pred)
+        except ValueError:
+            roc_auc = None
+
+        try:
+            mcc = matthews_corrcoef(y_true, y_pred)
+        except ValueError:
+            mcc = None
+
+        try:
+            bal_acc = balanced_accuracy_score(y_true, y_pred)
+        except ValueError:
+            bal_acc = None
+        try: 
+            specificity = tn / (tn + fp)
+        except ValueError:
+            specificity = None
+            
+            
+
         cm = confusion_matrix(y_true, y_pred)
         cm_flattened = cm.flatten().tolist()
-        f1 = f1_score(y_true, y_pred)
-        roc_auc = roc_auc_score(y_true, y_pred)
-        mcc = matthews_corrcoef(y_true, y_pred)
-        bal_acc = balanced_accuracy_score(y_true, y_pred)
+
+    
+
         print(
             f"accuracy: {accuracy:.4f}, precision: {precision:.4f}, recall: {recall:.4f}, specificity: {specificity:.4f}, cm: {cm}"
         )
