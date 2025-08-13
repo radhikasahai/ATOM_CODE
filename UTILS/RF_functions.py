@@ -63,6 +63,41 @@ def rf_results(model, x_input, y_labels, printout=False):
     prob = model.predict_proba(x_input)
     mcc = matthews_corrcoef(y_labels, pred)
     bal_acc = balanced_accuracy_score(y_labels, pred)
+
+    try:
+        precision = precision_score(y_labels, pred)
+    except ValueError:
+        precision = None
+
+    try:
+        recall = recall_score(y_labels, pred)
+    except ValueError:
+        recall = None
+
+    try:
+        f1 = f1_score(y_labels, pred)
+    except ValueError:
+        f1 = None
+
+    try:
+        roc_auc = roc_auc_score(y_labels, pred)
+    except ValueError:
+        roc_auc = None
+
+    try:
+        mcc = matthews_corrcoef(y_labels, pred)
+    except ValueError:
+        mcc = None
+
+    try:
+        bal_acc = balanced_accuracy_score(y_labels, pred)
+    except ValueError:
+        bal_acc = None
+    try: 
+        specificity = tn / (tn + fp)
+    except ValueError:
+        specificity = None
+            
     if printout: 
         print(f'accuracy: {acc:.3f}, precision: {precision:.3f}, recall: {recall:.3f}, specificity: {specificity:.3f}')
     return {'prediction': pred,'accuracy' : acc, 'precision' :precision, 'recall' :recall, 
