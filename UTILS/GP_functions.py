@@ -163,8 +163,8 @@ class Trainer:
         if isinstance(y_true, torch.Tensor):
             y_true = y_true.numpy().reshape(-1)
         # plot_confusion_matrix(y_true, y_pred, ['0','1'], title=plot_title)
-        accuracy = accuracy_score(y_true, y_pred)
-        precision = precision_score(y_true, y_pred)
+        
+        
         dist = self.model(x_input)  # get predicted distributions
         pred_means = dist.loc  # means for predicted dist
 
@@ -175,6 +175,11 @@ class Trainer:
             precision = precision_score(y_true, y_pred)
         except ValueError:
             precision = None
+        try: 
+            accuracy = accuracy_score(y_true, y_pred)
+        except ValueError:
+            accuracy = None
+        
 
         try:
             recall = recall_score(y_true, y_pred)
